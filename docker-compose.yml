@@ -1,0 +1,49 @@
+# In your project's root directory: /docker-compose.yml
+
+version: "3.8"
+
+services:
+  # 1. The PostgreSQL Database Service
+  db:
+    image: postgres:13-alpine # Using a specific, lightweight version
+    container_name: local_postgres_db
+    volumes:
+      # This persists your database data even if the container stops
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      # Maps your local machine's port 5432 to the container's port 5432
+      - "5432:5432"
+    environment:
+      # These are the credentials your backend will use to connect
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=newsletter_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d newsletter_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. The FastAPI Backend Service
+  backend:
+    container_name: local_fastapi_backend
+    # Tells Docker Compose to build the image from the Dockerfile in the ./backend directory
+    build: ./backend
+    ports:
+      # Maps your local machine's port 8000 to the container's port 8000
+      - "8000:8000"
+    volumes:
+      # This is the key for live-reloading:
+      # It maps your local code into the container, so changes are reflected instantly.
+      - ./backend/app:/code/app
+    environment:
+      # The DATABASE_URL for the backend to connect to the 'db' service.
+      # IMPORTANT: The host is 'db', the name of our database service, not 'localhost'.
+      - DATABASE_URL=postgresql://user:password@db:5432/newsletter_db
+    depends_on:
+      db:
+        condition: service_healthy # Waits for the DB to be ready before starting
+
+# Defines the named volume for data persistence
+volumes:
+  postgres_data:

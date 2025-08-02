@@ -191,30 +191,20 @@ Once the CloudFront distribution is deployed (this can take a few minutes), you 
 
 ## Local Development
 
-To run the application on your local machine for development:
+To run the application on your local machine for development, it's highly recommended to use Docker Compose for a consistent environment.
 
-### Backend
+### Running the Local Stack
 
-1.  Create a `.env` file in the `backend` directory.
-2.  Add your local or a test database URL to it: `DATABASE_URL="postgresql://user:pass@localhost:5432/dbname"`
-3.  Install dependencies and run the server:
+1.  **Start Docker Compose:** From the project's root directory, run the following command. This will build the backend image (if it's changed) and start both the backend and database containers.
+
     ```bash
-    cd backend
-    pip install -r requirements.txt
-    uvicorn app.main:app --reload
+    docker-compose up --build
     ```
-    The backend will be available at `http://localhost:8000`.
 
-### Frontend
-
-1.  In `frontend/package.json`, add a `proxy` key to forward API requests to your local backend:
-    ```json
-    "proxy": "http://localhost:8000"
-    ```
-2.  Install dependencies and start the development server:
+2.  **Start the Frontend:** In a **new terminal**, navigate to the frontend directory and start the React development server.
     ```bash
     cd frontend
     npm install
     npm start
     ```
-    The frontend will open at `http://localhost:3000`.
+    Your browser should open to `http://localhost:3000`, and the application will be fully functional for local testing.
