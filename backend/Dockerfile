@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # Copy the rest of the application code
 COPY ./app /code/app
+COPY ./init_db.py /code/init_db.py
 
 # Expose the port the app runs on
 EXPOSE 8000

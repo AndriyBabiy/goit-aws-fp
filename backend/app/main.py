@@ -3,11 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 
-from . import crud, models, schemas
-from .database import SessionLocal, engine
-
-# This creates the 'subscribers' table if it doesn't exist
-models.Base.metadata.create_all(bind=engine)
+from . import crud, schemas
+from .database import SessionLocal
 
 app = FastAPI()
 
@@ -32,6 +29,7 @@ def get_db():
 # --- API Endpoints ---
 @app.get("/health")
 def health_check():
+    # This endpoint has NO database dependency, which is good!
     return {"status": "ok"}
 
 @app.post("/api/subscribe", response_model=schemas.Subscriber)

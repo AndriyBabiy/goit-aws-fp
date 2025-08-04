@@ -208,3 +208,5 @@ To run the application on your local machine for development, it's highly recomm
     npm start
     ```
     Your browser should open to `http://localhost:3000`, and the application will be fully functional for local testing.
+
+---
